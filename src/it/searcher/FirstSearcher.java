@@ -3,9 +3,9 @@ package it.searcher;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.KeywordAnalyzer;
@@ -21,7 +21,6 @@ import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
-
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -42,7 +41,7 @@ public class FirstSearcher {
             perField.put("filename", new KeywordAnalyzer());
             PerFieldAnalyzerWrapper analyzer = new PerFieldAnalyzerWrapper(defaultAnalyzer, perField);
 
-            System.out.println("== 🔎 Motore di Ricerca Lucene ==");
+            System.out.println("MOTORE DI RICERCA");
             System.out.println("Scrivi 'e' o 'E' per uscire.\n");
 
             while (true) {
@@ -55,28 +54,37 @@ public class FirstSearcher {
                 }
 
                 if (input.isEmpty()) {
-                    System.out.println("⚠️ Nessuna query inserita.\n");
+                    System.out.println("Nessuna query inserita.\n");
                     continue;
                 }
 
                 try {
+
+                    List<String> terms = new ArrayList<>();
+                    Matcher m = Pattern.compile("\"([^\"]+)\"|(\\S+)").matcher(input);
+                    while (m.find()) {
+                        if (m.group(1) != null)
+                            terms.add(m.group(1)); // frase tra virgolette
+                        else
+                            terms.add(m.group(2)); // parola singola
+                    }
 
                     MultiFieldQueryParser parser = new MultiFieldQueryParser(
                             new String[]{"content", "filename"}, analyzer);
 
                     parser.setDefaultOperator(QueryParser.Operator.OR);
 
-                    String[] terms = input.split("\\s+");
                     StringBuilder queryBuilder = new StringBuilder();
                     for (String term : terms) {
+                        term = term.toLowerCase().trim();
                         if (term.length() > 2) {
                             queryBuilder.append("(")
-                                    .append(term.toLowerCase())
+                                    .append(QueryParser.escape(term))
                                     .append("* OR ")
-                                    .append(term.toLowerCase())
+                                    .append(QueryParser.escape(term))
                                     .append("~1) ");
                         } else {
-                            queryBuilder.append(term.toLowerCase()).append(" ");
+                            queryBuilder.append(QueryParser.escape(term)).append(" ");
                         }
                     }
 
@@ -85,12 +93,16 @@ public class FirstSearcher {
 
                     TopDocs hits = searcher.search(query, 20);
 
-                    for (ScoreDoc scoreDoc : hits.scoreDocs) {
-                        Document doc = storedFields.document(scoreDoc.doc);
-                        float score = scoreDoc.score;
-                        System.out.printf("- %-30s (score: %.3f)%n", doc.get("filename"), score);
+                    if (hits.scoreDocs.length == 0) {
+                        System.out.println("Nessun risultato trovato.\n");
+                    } else {
+                        for (ScoreDoc scoreDoc : hits.scoreDocs) {
+                            Document doc = storedFields.document(scoreDoc.doc);
+                            float score = scoreDoc.score;
+                            System.out.printf("- %-30s (score: %.3f)%n", doc.get("filename"), score);
+                        }
+                        System.out.println();
                     }
-                    System.out.println();
 
                 } catch (ParseException e) {
                     System.out.println("Errore di sintassi nella query: " + e.getMessage() + "\n");
