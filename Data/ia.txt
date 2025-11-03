@@ -1,0 +1,7 @@
+Intelligenza artificiale, machine learning e futuro del lavoro  
+L’intelligenza artificiale (IA) sta trasformando molti settori: sanità, trasporti, finanza, manifattura e servizio al cliente.  
+Con tecniche come machine learning, deep learning e reti neurali, possiamo analizzare grandi quantità di dati, svolgere previsioni e automazione.  
+Tuttavia emergono questioni etiche: bias nei dati, trasparenza degli algoritmi, perdita di posti di lavoro e nuove competenze richieste.  
+La collaborazione uomo-macchina sarà sempre più importante: gli algoritmi possono assistere, ma serve il contributo umano per creatività, empatia e giudizio.  
+Nel futuro del lavoro è previsto un mix: nuove professioni legate all’IA, formazione continua, aggiornamento delle competenze digitali e politiche di adattamento.
+

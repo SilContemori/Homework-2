@@ -1,0 +1,29 @@
+    version 10.2.2
+    min version 10.2.2
+    number of documents 10
+    uses compound file true
+    has blocks false
+    diagnostics 8
+      key os
+      value Mac OS X
+      key java.vendor
+      value Eclipse Adoptium
+      key java.runtime.version
+      value 21.0.8+9-LTS
+      key timestamp
+      value 1762106582128
+      key source
+      value flush
+      key lucene.version
+      value 10.2.2
+      key os.version
+      value 15.4
+      key os.arch
+      value aarch64
+    attributes 0
+    files 2
+      file _6.scf
+      file _6.si
+    id [b7 ae a7 f2 89 ff b6 62 5 ab ff e7 2f 2f a7 20]
+    sort 0
+checksum 00000000001356525306
